@@ -1,0 +1,13 @@
+bindings:
+  firstName: dathan
+steps:
+  - type: bash
+    script: |
+      echo "hi ${firstName} ${lastName}"
+      lastName=Bennett
+    input_variables: [firstName]
+    output_variables: [lastName]
+  - type: bash
+    script: |
+      echo "hi ${firstName} ${lastName}"
+    input_variables: [firstName, lastName]
