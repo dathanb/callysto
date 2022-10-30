@@ -1,7 +1,7 @@
 import base64
 
 
-class ShellVar:
+class ShellVariable:
     def __init__(self, name, value, is_base64=False):
         self.name = name
         self.value = value
