@@ -46,7 +46,7 @@ class ShellScript:
 
         # pass input vars into the script
         for input_var in self.input_vars:
-            var_value = self.state[input_var]
+            var_value = self.state[input_var].encode()
             input.append(f"""{input_var}="$(echo "{var_value}" | base64 -d)\"""")
 
         input.append(self.script)
@@ -56,25 +56,26 @@ class ShellScript:
 
     def update_state(self):
         separator_offset = self.output.find(self.section_separator)
-        output_section = self.output[separator_offset+len(self.section_separator)+1:].strip()
-        output_directives=output_section.split("\n")
+        output_section = self.output[separator_offset + len(self.section_separator) + 1:].strip()
+        output_directives = output_section.split("\n")
         for directive in output_directives:
             if len(directive) == 0:
                 # TODO: log this
                 continue
-            (var, value) = directive.split(":")
-            self.state[var] = value
+            (variable_name, value) = directive.split(":")
+            if variable_name in state:
+                self.state[variable_name].update_from(value)
+            else:
+                self.state[variable_name] = ShellVariable(variable_name, value, is_base64=True)
 
 
 if __name__ == "__main__":
-
     cmd = """
 echo "Hi ${firstName} ${lastName}"
 lastName=Bennett
 """
-    state = {'firstName': 'RGF0aGFuCg=='}
+    state = {'firstName': ShellVariable('firstName', 'Dathan')}
     script1 = ShellScript(state, ['firstName'], ['firstName', 'lastName'], cmd)
     script1.run()
     script1 = ShellScript(state, ['firstName', 'lastName'], ['firstName', 'lastName'], cmd)
     script1.run()
-

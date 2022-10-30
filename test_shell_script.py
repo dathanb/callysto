@@ -1,6 +1,6 @@
 import base64
 
-from shellscript import ShellScript
+from shell_script import ShellScript
 
 
 def test_shell_script_can_return_vars():
