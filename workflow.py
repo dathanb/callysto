@@ -8,10 +8,14 @@ class Workflow:
     bindings: dict
     steps: [ShellScript]
 
-    def __init__(self, workflow_definition_file):
-        with open(workflow_definition_file, "r") as stream:
+    @classmethod
+    def from_file(cls, file_name):
+        with open(file_name, "r") as stream:
             workflow_string = stream.read()
-        data = yaml.safe_load(workflow_string)
+        return Workflow(workflow_string)
+
+    def __init__(self, workflow_definition: str):
+        data = yaml.safe_load(workflow_definition)
         print(data)
         self.build_bindings(data)
         self.build_workflow_steps(data)
