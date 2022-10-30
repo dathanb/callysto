@@ -30,6 +30,8 @@ class Workflow:
 
     def build_workflow_steps(self, data):
         self.steps = []
+        if 'steps' not in data:
+            return
         for step_data in data['steps']:
             input_variables = []
             if 'input_variables' in step_data:
