@@ -38,7 +38,7 @@ class ShellScript:
         input.append("""function linear_workflow_do_cleanup() {""")
         input.append(f"""    echo "{self.section_separator}\"""")
         for output_var in self.output_vars:
-            input.append(f"""    echo "{output_var}:$(echo "${{{output_var}}}" | base64)" """);
+            input.append(f"""    echo "{output_var}:$(echo "${{{output_var}}}" | tr -d '\n' | base64)" """);
         input.append("""}""")
         input.append("""trap linear_workflow_do_cleanup EXIT""")
 
@@ -57,11 +57,15 @@ class ShellScript:
         output_section = self.output[separator_offset+len(self.section_separator)+1:].strip()
         output_directives=output_section.split("\n")
         for directive in output_directives:
+            if len(directive) == 0:
+                # TODO: log this
+                continue
             (var, value) = directive.split(":")
             self.state[var] = value
 
 
 if __name__ == "__main__":
+
     cmd = """
 echo "Hi ${firstName} ${lastName}"
 lastName=Bennett
