@@ -5,9 +5,11 @@ import threading
 import uuid
 from subprocess import PIPE
 
+from shell_variable import ShellVariable
+
 
 class ShellScript:
-    state: dict
+    state: dict[str, ShellVariable]
     input_vars: [str]
     output_vars: [str]
     script: str
