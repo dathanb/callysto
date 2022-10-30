@@ -63,7 +63,7 @@ class ShellScript:
                 # TODO: log this
                 continue
             (variable_name, value) = directive.split(":")
-            if variable_name in state:
+            if variable_name in self.state:
                 self.state[variable_name].update_from(value)
             else:
                 self.state[variable_name] = ShellVariable(variable_name, value, is_base64=True)

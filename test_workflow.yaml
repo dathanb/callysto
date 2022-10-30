@@ -1,3 +1,5 @@
+bindings:
+  firstName: dathan
 steps:
   - type: bash
     script: |
