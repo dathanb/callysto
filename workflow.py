@@ -57,6 +57,8 @@ class Workflow:
             else:
                 step_result['status'] = 'FAILURE'
             results['steps'].append(step_result)
+            if step_result['status'] != 'SUCCESS':
+                break
         return results
 
 
