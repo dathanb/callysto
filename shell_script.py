@@ -32,10 +32,8 @@ class ShellScript:
         self.process_handle = subprocess.Popen("bash", stdin=PIPE, stdout=PIPE, encoding="utf-8")
         (self.raw_output, stderr) = self.process_handle.communicate(input=self.build_script())
         self.output = self.truncate_output()
-        print(self.process_handle.returncode)
         self.update_state()
         self.exit_code = self.process_handle.returncode
-        print(self.output)
 
     def truncate_output(self):
         """The raw output is expected to contain actual shell output, then the section separator, then output
@@ -66,8 +64,8 @@ class ShellScript:
         return "\n".join(input)
 
     def update_state(self):
-        separator_offset = self.output.find(self.section_separator)
-        output_section = self.output[separator_offset + len(self.section_separator) + 1:].strip()
+        separator_offset = self.raw_output.find(self.section_separator)
+        output_section = self.raw_output[separator_offset + len(self.section_separator) + 1:].strip()
         output_directives = output_section.split("\n")
         for directive in output_directives:
             if len(directive) == 0:

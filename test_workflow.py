@@ -65,3 +65,23 @@ steps:
     data = Workflow(definition).run()
     assert len(data['steps']) == 1
     assert data['steps'][0]['status'] == 'PENDING'
+
+
+def test_can_pass_variables_between_steps():
+    definition = """
+bindings:
+  firstName: Dathan
+steps:
+  - type: bash
+    script: |
+      echo "Hi ${firstName}"
+      lastName=Bennett
+    input_variables: [firstName]
+    output_variables: [lastName]
+  - type: bash
+    script: |
+      echo "Hi ${firstName} ${lastName}"
+    input_variables: [firstName, lastName]
+"""
+    data = Workflow(definition).run()
+    assert data['steps'][1]['output'] == "Hi Dathan Bennett\n"
