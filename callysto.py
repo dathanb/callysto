@@ -15,7 +15,7 @@ def parse_command_line(argv):
 
 
 def run_workflow(file_name):
-    Workflow(args.filename).run()
+    Workflow.from_file(args.filename).run()
 
 
 if __name__ == '__main__':

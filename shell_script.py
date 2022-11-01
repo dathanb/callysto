@@ -16,6 +16,7 @@ class ShellScript:
     process_handle: subprocess.Popen
     output: str
     section_separator: str
+    exit_code: int
 
     def __init__(self, state: dict, input_vars: [str], output_vars: [str], script: str):
         self.state = state
@@ -29,9 +30,20 @@ class ShellScript:
 
     def run(self):
         self.process_handle = subprocess.Popen("bash", stdin=PIPE, stdout=PIPE, encoding="utf-8")
-        (self.output, stderr) = self.process_handle.communicate(input=self.build_script())
+        (self.raw_output, stderr) = self.process_handle.communicate(input=self.build_script())
+        self.output = self.truncate_output()
+        print(self.process_handle.returncode)
         self.update_state()
+        self.exit_code = self.process_handle.returncode
         print(self.output)
+
+    def truncate_output(self):
+        """The raw output is expected to contain actual shell output, then the section separator, then output
+        variable bindings. Developers shouldn't have to worry about the specifics of the protocol Callysto uses for
+        bash scripts, so this method strips off the section separator and everything after it."""
+        separator_offset = self.raw_output.find(self.section_separator)
+        return self.raw_output[:separator_offset]
+
 
     def build_script(self):
         input = []
@@ -67,15 +79,3 @@ class ShellScript:
                 self.state[variable_name].update_from(value)
             else:
                 self.state[variable_name] = ShellVariable(variable_name, value, is_base64=True)
-
-
-if __name__ == "__main__":
-    cmd = """
-echo "Hi ${firstName} ${lastName}"
-lastName=Bennett
-"""
-    state = {'firstName': ShellVariable('firstName', 'Dathan')}
-    script1 = ShellScript(state, ['firstName'], ['firstName', 'lastName'], cmd)
-    script1.run()
-    script1 = ShellScript(state, ['firstName', 'lastName'], ['firstName', 'lastName'], cmd)
-    script1.run()
