@@ -44,7 +44,6 @@ class ShellScript:
         separator_offset = self.raw_output.find(self.section_separator)
         return self.raw_output[:separator_offset]
 
-
     def build_script(self):
         input = []
         # TODO: we can probably just construct a single string and write it all at once

@@ -11,6 +11,7 @@ bindings:
     workflow = Workflow(definition)
     assert workflow.bindings['firstName'].value == 'dathan'
 
+
 def test_workflow_rejects_non_bash_step():
     definition = """
 steps:
@@ -42,3 +43,25 @@ steps:
     assert data['steps'][1]['output'] == "Bar\n"
     assert data['steps'][1]['status'] == 'SUCCESS'
 
+
+def test_exit_code_64_means_pending():
+    definition = """
+steps:
+    - type: bash
+      script: exit 64
+"""
+    data = Workflow(definition).run()
+    assert data['steps'][0]['status'] == 'PENDING'
+
+
+def test_on_failure_or_pending_do_not_execute_subsequent_steps():
+    definition = """
+steps:
+    - type: bash
+      script: exit 64
+    - type: bash
+      script: echo "This should not get executed"
+"""
+    data = Workflow(definition).run()
+    assert len(data['steps']) == 1
+    assert data['steps'][0]['status'] == 'PENDING'
