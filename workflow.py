@@ -33,6 +33,8 @@ class Workflow:
         if 'steps' not in data:
             return
         for step_data in data['steps']:
+            if step_data['type'] != 'bash':
+                raise NotImplementedError(f"Step type {step_data['type']} is not supported")
             input_variables = []
             if 'input_variables' in step_data:
                 input_variables = step_data['input_variables']

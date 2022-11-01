@@ -1,3 +1,5 @@
+import pytest
+
 from workflow import Workflow
 
 
@@ -8,6 +10,16 @@ bindings:
 """
     workflow = Workflow(definition)
     assert workflow.bindings['firstName'].value == 'dathan'
+
+def test_workflow_rejects_non_bash_step():
+    definition = """
+steps:
+    - type: python
+      script: |
+        print("Foo")
+"""
+    with pytest.raises(NotImplementedError):
+        Workflow(definition)
 
 
 def test_workflow_records_steps():
