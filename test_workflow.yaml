@@ -1,13 +1,14 @@
 bindings:
-  firstName: dathan
+  firstName: Dathan
 steps:
   - type: bash
     script: |
-      echo "hi ${firstName} ${lastName}"
+      echo "Hi ${firstName}"
       lastName=Bennett
     input_variables: [firstName]
     output_variables: [lastName]
   - type: bash
     script: |
-      echo "hi ${firstName} ${lastName}"
+      echo "Hi ${firstName} ${lastName}"
+      exit 64
     input_variables: [firstName, lastName]

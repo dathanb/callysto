@@ -3,3 +3,4 @@ TODO: fill out the Usage section in the README
 TODO: fill out the API section in the README
 TODO: fill out the Installation section in the README
 TODO: support base64-encoded variables in the YAML variable bindings
+TODO: detect and warn when an input variable doesn't exist in bindings yet

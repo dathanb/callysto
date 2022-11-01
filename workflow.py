@@ -7,6 +7,7 @@ from shell_variable import ShellVariable
 class Workflow:
     bindings: dict
     steps: [ShellScript]
+    state_file: str | None
 
     @classmethod
     def from_file(cls, file_name):
@@ -16,9 +17,12 @@ class Workflow:
 
     def __init__(self, workflow_definition: str):
         data = yaml.safe_load(workflow_definition)
-        print(data)
         self.build_bindings(data)
         self.build_workflow_steps(data)
+        self.state_file = None
+
+    def with_state_file(self, filename):
+        self.state_file = filename
 
     def build_bindings(self, data):
         self.bindings = dict()
@@ -59,6 +63,9 @@ class Workflow:
             results['steps'].append(step_result)
             if step_result['status'] != 'SUCCESS':
                 break
+        if self.state_file:
+            with open(self.state_file, 'w') as output_file:
+                yaml.dump(results, output_file)
         return results
 
 
