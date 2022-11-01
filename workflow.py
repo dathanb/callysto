@@ -42,8 +42,20 @@ class Workflow:
             self.steps.append(ShellScript(self.bindings, input_variables, output_variables, step_data['script']))
 
     def run(self):
+        results = dict()
+        results['steps'] = []
         for step in self.steps:
             step.run()
+            step_result = dict()
+            step_result['output'] = step.output
+            if step.exit_code == 0:
+                step_result['status'] = 'SUCCESS'
+            elif step.exit_code == 64:
+                step_result['status'] = 'PENDING'
+            else:
+                step_result['status'] = 'FAILURE'
+            results['steps'].append(step_result)
+        return results
 
 
 class WorkflowStep:
